@@ -1,9 +1,7 @@
 {
-  "name": "mern-todo-app",
+  "name": "mern-todo-app-root",
   "version": "1.0.0",
-  "description": "MERN To-Do App for deployment",
-  "main": "backend/server.js",
-  "type": "module",
+  "description": "Root package for MERN To-Do App",
   "scripts": {
     "start": "node backend/server.js",
     "server": "nodemon backend/server.js",
