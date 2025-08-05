@@ -1,8 +1,5 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit';
-// import api from '../../utils/api'; // No longer needed directly
 import todoService from './todoService'; // Import the service
-
-const API_URL = '/api/todos';
 
 // Async thunks for Todo Lists
 export const getTodoLists = createAsyncThunk(
@@ -33,8 +30,8 @@ export const deleteTodoList = createAsyncThunk(
   'todos/deleteList',
   async (listId, { rejectWithValue }) => {
     try {
-      await api.delete(`${API_URL}/lists/${listId}`);
-      return listId; // Return the id to identify which list to remove
+      await todoService.deleteList(listId);
+      return listId;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
@@ -43,10 +40,9 @@ export const deleteTodoList = createAsyncThunk(
 
 export const updateTodoItem = createAsyncThunk(
   'todos/updateItem',
-  async ({ listId, itemId, completed }, { rejectWithValue }) => {
+  async ({ listId, itemId, ...data }, { rejectWithValue }) => {
     try {
-      const response = await api.put(`${API_URL}/lists/${listId}/items/${itemId}`, { completed });
-      return response.data;
+      return await todoService.updateItem(listId, itemId, data);
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
@@ -57,8 +53,8 @@ export const deleteTodoItem = createAsyncThunk(
   'todos/deleteItem',
   async ({ listId, itemId }, { rejectWithValue }) => {
     try {
-      await api.delete(`${API_URL}/lists/${listId}/items/${itemId}`);
-      return { listId, itemId };
+      await todoService.deleteItem(listId, itemId);
+      return { listId, itemId }; // Return both to identify which item to remove from which list
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
@@ -70,8 +66,8 @@ export const getTodoItems = createAsyncThunk(
   'todos/getItems',
   async (listId, { rejectWithValue }) => {
     try {
-      const response = await api.get(`${API_URL}/lists/${listId}/items`);
-      return { listId, items: response.data };
+      const items = await todoService.getItems(listId);
+      return { listId, items };
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
@@ -82,8 +78,7 @@ export const createTodoItem = createAsyncThunk(
   'todos/createItem',
   async ({ listId, text }, { rejectWithValue }) => {
     try {
-      const response = await api.post(`${API_URL}/lists/${listId}/items`, { text });
-      return response.data;
+      return await todoService.createItem(listId, text);
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
