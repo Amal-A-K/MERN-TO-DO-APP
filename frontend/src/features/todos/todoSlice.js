@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit';
-import api from '../../utils/api';
+// import api from '../../utils/api'; // No longer needed directly
+import todoService from './todoService'; // Import the service
 
 const API_URL = '/api/todos';
 
@@ -8,8 +9,8 @@ export const getTodoLists = createAsyncThunk(
   'todos/getLists',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await api.get(`${API_URL}/lists`);
-      return response.data;
+      // Use the service function
+      return await todoService.getLists();
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
@@ -20,8 +21,8 @@ export const createTodoList = createAsyncThunk(
   'todos/createList',
   async (listData, { rejectWithValue }) => {
     try {
-      const response = await api.post(`${API_URL}/lists`, listData);
-      return response.data;
+      // Use the service function
+      return await todoService.createList(listData.name);
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
