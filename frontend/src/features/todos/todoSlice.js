@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, createSelector } from '@reduxjs/toolkit';
 import api from '../../utils/api';
 
-const API_URL = '/todos';
+const API_URL = '/api/todos';
 
 // Async thunks for Todo Lists
 export const getTodoLists = createAsyncThunk(

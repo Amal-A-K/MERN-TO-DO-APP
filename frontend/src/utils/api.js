@@ -1,26 +1,13 @@
 import axios from 'axios';
-import { logoutUser } from '../features/auth/authSlice';
+
+// Vite exposes env variables on the `import.meta.env` object.
+// VITE_API_URL will be set in Render's environment variables.
+// In development, it will be undefined and fall back to a relative path,
+// which will be handled by the Vite proxy in vite.config.js.
+const API_URL = import.meta.env.VITE_API_URL || '';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
-  withCredentials: true
+  baseURL: API_URL,
 });
-
-/**
- * Injects the Redux store to dispatch actions from the interceptor.
- * This is called from main.jsx to avoid circular dependencies.
- * @param {import('@reduxjs/toolkit').Store} store The Redux store.
- */
-export const setupInterceptors = (store) => {
-  api.interceptors.response.use(
-    (response) => response,
-    (error) => {
-      if (error.response?.status === 401 && !error.config.url.endsWith('/login')) {
-        store.dispatch(logoutUser());
-      }
-      return Promise.reject(error);
-    }
-  );
-};
 
 export default api;
